@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Edit.TreeSitter</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Edit.Text\Edit.Text.csproj" />
+    <ProjectReference Include="..\Edit.Platform\Edit.Platform.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="TreeSitter.DotNet" />
+  </ItemGroup>
+</Project>

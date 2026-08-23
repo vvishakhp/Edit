@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Edit.Plugins.Git</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <ProjectReference Include="..\..\src\Edit.ComponentModel\Edit.ComponentModel.csproj" />
+  </ItemGroup>
+</Project>

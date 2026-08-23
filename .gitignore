@@ -1,0 +1,13 @@
+bin/
+obj/
+.vs/
+.idea/
+*.user
+*.suo
+*.DotSettings.user
+TestResults/
+*.nupkg
+.DS_Store
+native/
+artifacts/
+.avalonia-build-tasks/

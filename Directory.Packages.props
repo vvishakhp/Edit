@@ -1,0 +1,44 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Avalonia -->
+    <PackageVersion Include="Avalonia" Version="11.3.2" />
+    <PackageVersion Include="Avalonia.Desktop" Version="11.3.2" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="11.3.2" />
+    <PackageVersion Include="Avalonia.Fonts.Inter" Version="11.3.2" />
+    <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.2" />
+    <PackageVersion Include="Avalonia.Skia" Version="11.3.2" />
+    <PackageVersion Include="Avalonia.Headless" Version="11.3.2" />
+    <PackageVersion Include="Avalonia.Headless.XUnit" Version="11.3.2" />
+    <!-- Dock -->
+    <PackageVersion Include="Dock.Avalonia" Version="11.3.2" />
+    <PackageVersion Include="Dock.Model" Version="11.3.2" />
+    <PackageVersion Include="Dock.Model.Mvvm" Version="11.3.2" />
+    <PackageVersion Include="Dock.Avalonia.Themes.Fluent" Version="11.3.2" />
+    <!-- Skia -->
+    <PackageVersion Include="SkiaSharp" Version="2.88.9" />
+    <!-- DI / hosting -->
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.8" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.8" />
+    <!-- LSP -->
+    <PackageVersion Include="OmniSharp.Extensions.LanguageClient" Version="0.19.9" />
+    <PackageVersion Include="OmniSharp.Extensions.LanguageProtocol" Version="0.19.9" />
+    <PackageVersion Include="StreamJsonRpc" Version="2.21.69" />
+    <!-- Tree-sitter -->
+    <PackageVersion Include="TreeSitter.DotNet" Version="1.3.0" />
+    <!-- CommunityToolkit for MVVM -->
+    <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <!-- Testing -->
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.3" />
+    <PackageVersion Include="FluentAssertions" Version="8.5.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="Moq" Version="4.20.72" />
+  </ItemGroup>
+</Project>

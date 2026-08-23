@@ -1,0 +1,128 @@
+name: Tree-sitter natives
+
+# Invoked from CI when grammar/script paths change, or manually via workflow_dispatch.
+# No push/PR triggers so app CI can wait for a finished natives publish.
+on:
+  workflow_call:
+    inputs:
+      force:
+        description: 'Rebuild all grammars even if fingerprints match'
+        type: boolean
+        default: false
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Rebuild all grammars even if fingerprints match'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+env:
+  TREE_SITTER_CLI_VERSION: '0.26.13'
+  TREE_SITTER_NATIVES_TAG: tree-sitter-natives
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install tree-sitter CLI
+        if: matrix.os != 'ubuntu-latest'
+        shell: bash
+        run: npm install -g "tree-sitter-cli@${{ env.TREE_SITTER_CLI_VERSION }}"
+
+      # tree-sitter build uses the Rust cc crate, which expects MSVC (cl.exe) on Windows.
+      - name: Setup MSVC environment
+        if: matrix.os == 'windows-latest'
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Update natives
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TREE_SITTER_NATIVES_REPO: ${{ github.repository }}
+        run: |
+          chmod +x scripts/*.sh
+          FORCE_FLAG=""
+          if [[ "${{ inputs.force }}" == "true" ]]; then
+            FORCE_FLAG="--force"
+          fi
+          ./scripts/update-tree-sitter-natives.sh --rid "${{ matrix.rid }}" $FORCE_FLAG
+
+      - name: Upload packed natives
+        uses: actions/upload-artifact@v4
+        with:
+          name: natives-${{ matrix.rid }}
+          path: |
+            artifacts/tree-sitter-natives/natives-*
+            artifacts/tree-sitter-natives/index-${{ matrix.rid }}.json
+          if-no-files-found: error
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Download packed natives
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/tree-sitter-natives
+          merge-multiple: true
+
+      - name: Merge index.json
+        run: |
+          mkdir -p artifacts/tree-sitter-natives
+          files=$(ls artifacts/tree-sitter-natives/index-*.json | tr '\n' ',' | sed 's/,$//')
+          node scripts/tree-sitter-natives.js merge-index \
+            --files "$files" \
+            --out artifacts/tree-sitter-natives/index.json
+
+      - name: Publish / update natives release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TREE_SITTER_NATIVES_TAG }}
+          name: Tree-sitter natives
+          prerelease: true
+          make_latest: false
+          body: |
+            Cached Tree-sitter grammar natives for Edit CI and app releases.
+
+            Updated automatically when `config/tree-sitter-grammars.json` or the
+            native build scripts change. CI and Release workflows download these
+            assets instead of rebuilding every grammar on every run.
+
+            Assets:
+            - `natives-linux-x64.tar.gz`
+            - `natives-win-x64.zip`
+            - `natives-osx-arm64.tar.gz`
+            - `index.json` (per-grammar fingerprints)
+          files: |
+            artifacts/tree-sitter-natives/natives-linux-x64.tar.gz
+            artifacts/tree-sitter-natives/natives-win-x64.zip
+            artifacts/tree-sitter-natives/natives-osx-arm64.tar.gz
+            artifacts/tree-sitter-natives/index.json
+          fail_on_unmatched_files: true

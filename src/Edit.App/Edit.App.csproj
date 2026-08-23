@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Edit.App</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <PublishSingleFile>false</PublishSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Fonts.Inter" />
+    <PackageReference Include="Avalonia.Diagnostics" Condition="'$(Configuration)' == 'Debug'" />
+    <PackageReference Include="Dock.Avalonia" />
+    <PackageReference Include="Dock.Avalonia.Themes.Fluent" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Edit.Shell\Edit.Shell.csproj" />
+    <ProjectReference Include="..\Edit.Core\Edit.Core.csproj" />
+    <ProjectReference Include="..\Edit.ComponentModel\Edit.ComponentModel.csproj" />
+    <ProjectReference Include="..\Edit.Plugins.Host\Edit.Plugins.Host.csproj" />
+    <ProjectReference Include="..\Edit.TreeSitter\Edit.TreeSitter.csproj" />
+    <ProjectReference Include="..\Edit.Lsp\Edit.Lsp.csproj" />
+    <ProjectReference Include="..\Edit.Workspace\Edit.Workspace.csproj" />
+    <ProjectReference Include="..\Edit.Platform\Edit.Platform.csproj" />
+    <ProjectReference Include="..\..\plugins\Edit.Plugins.Files\Edit.Plugins.Files.csproj" />
+    <ProjectReference Include="..\..\plugins\Edit.Plugins.Sample\Edit.Plugins.Sample.csproj" />
+    <ProjectReference Include="..\..\plugins\Edit.Plugins.Search\Edit.Plugins.Search.csproj" />
+    <ProjectReference Include="..\..\plugins\Edit.Plugins.Git\Edit.Plugins.Git.csproj" />
+    <ProjectReference Include="..\..\plugins\Edit.Plugins.Terminal\Edit.Plugins.Terminal.csproj" />
+    <ProjectReference Include="..\Edit.Dap\Edit.Dap.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\native\$(RuntimeIdentifier)\**\*" Link="tree-sitter\$(RuntimeIdentifier)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' != '' AND Exists('..\..\native\$(RuntimeIdentifier)')" />
+    <None Include="..\..\themes\**\*" Link="themes\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

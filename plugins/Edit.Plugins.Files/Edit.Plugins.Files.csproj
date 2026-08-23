@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Edit.Plugins.Files</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Edit.ComponentModel\Edit.ComponentModel.csproj" />
+    <ProjectReference Include="..\..\src\Edit.Core\Edit.Core.csproj" />
+    <ProjectReference Include="..\..\src\Edit.Workspace\Edit.Workspace.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Edit.Plugins.Search</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <ProjectReference Include="..\..\src\Edit.ComponentModel\Edit.ComponentModel.csproj" />
+    <ProjectReference Include="..\..\src\Edit.Workspace\Edit.Workspace.csproj" />
+  </ItemGroup>
+</Project>

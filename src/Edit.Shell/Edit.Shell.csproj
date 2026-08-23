@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Edit.Shell</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Dock.Avalonia" />
+    <PackageReference Include="Dock.Model" />
+    <PackageReference Include="Dock.Model.Mvvm" />
+    <PackageReference Include="Dock.Avalonia.Themes.Fluent" />
+    <PackageReference Include="CommunityToolkit.Mvvm" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Edit.Editor\Edit.Editor.csproj" />
+    <ProjectReference Include="..\Edit.Core\Edit.Core.csproj" />
+    <ProjectReference Include="..\Edit.Workspace\Edit.Workspace.csproj" />
+    <ProjectReference Include="..\Edit.TreeSitter\Edit.TreeSitter.csproj" />
+    <ProjectReference Include="..\Edit.Lsp\Edit.Lsp.csproj" />
+    <ProjectReference Include="..\Edit.ComponentModel\Edit.ComponentModel.csproj" />
+    <ProjectReference Include="..\Edit.Platform\Edit.Platform.csproj" />
+  </ItemGroup>
+</Project>

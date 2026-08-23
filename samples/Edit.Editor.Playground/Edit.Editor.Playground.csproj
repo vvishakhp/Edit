@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Edit.Editor.Playground</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Edit.Editor\Edit.Editor.csproj" />
+    <ProjectReference Include="..\..\src\Edit.Core\Edit.Core.csproj" />
+    <ProjectReference Include="..\..\src\Edit.TreeSitter\Edit.TreeSitter.csproj" />
+  </ItemGroup>
+</Project>

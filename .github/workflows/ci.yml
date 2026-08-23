@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  # When grammar/native-build inputs change, rebuild and publish natives first so
+  # app CI never races a stale or mid-update tree-sitter-natives release.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      natives: ${{ steps.filter.outputs.natives }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            natives:
+              - 'config/tree-sitter-grammars.json'
+              - 'scripts/build-tree-sitter.sh'
+              - 'scripts/build-tree-sitter-linux.sh'
+              - 'scripts/tree-sitter-natives.js'
+              - 'scripts/update-tree-sitter-natives.sh'
+              - 'scripts/download-tree-sitter-natives.sh'
+              - 'docker/tree-sitter-linux/**'
+              - '.github/workflows/tree-sitter-natives.yml'
+
+  tree-sitter-natives:
+    needs: changes
+    if: >
+      needs.changes.outputs.natives == 'true' &&
+      github.event_name == 'push' &&
+      (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    permissions:
+      contents: write
+    uses: ./.github/workflows/tree-sitter-natives.yml
+    with:
+      force: false
+    secrets: inherit
+
+  build-test:
+    needs: [changes, tree-sitter-natives]
+    if: >
+      always() &&
+      needs.changes.result == 'success' &&
+      (needs.tree-sitter-natives.result == 'success' || needs.tree-sitter-natives.result == 'skipped')
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: windows-latest
+            rid: win-x64
+          - os: macos-latest
+            rid: osx-arm64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            9.0.x
+            10.0.x
+
+      - name: Configure NuGet package cache
+        shell: bash
+        run: |
+          # Prefer runner temp when available; fall back for local act.
+          cache_root="${RUNNER_TEMP:-/tmp}"
+          echo "NUGET_PACKAGES=${cache_root}/nuget" >> "$GITHUB_ENV"
+      - name: Download Tree-sitter natives
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TREE_SITTER_NATIVES_REPO: ${{ github.repository }}
+        run: |
+          chmod +x scripts/*.sh
+          if [[ -d "native/${{ matrix.rid }}" && -n "$(find "native/${{ matrix.rid }}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | head -1)" ]]; then
+            echo "Using existing natives in native/${{ matrix.rid }} (local/act cache)."
+          elif ./scripts/download-tree-sitter-natives.sh --rid "${{ matrix.rid }}"; then
+            echo "Downloaded natives from release."
+          elif [[ "${{ matrix.os }}" == "ubuntu-latest" ]]; then
+            echo "Natives release missing; building Linux natives as fallback."
+            ./scripts/build-tree-sitter-linux.sh
+          else
+            echo "Tree-sitter natives release not found and no fallback on this OS." >&2
+            echo "Bootstrap by running the Tree-sitter natives workflow first." >&2
+            exit 1
+          fi
+
+      - name: Restore
+        run: dotnet restore Edit.sln
+      - name: Build
+        run: dotnet build Edit.sln -c Release --no-restore
+      - name: Test
+        run: dotnet test Edit.sln -c Release --verbosity normal

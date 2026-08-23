@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Avalonia.Headless.XUnit" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" />
+    <PackageReference Include="Dock.Avalonia" />
+    <PackageReference Include="Dock.Avalonia.Themes.Fluent" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Edit.App\Edit.App.csproj" />
+    <ProjectReference Include="..\..\src\Edit.Shell\Edit.Shell.csproj" />
+    <ProjectReference Include="..\..\plugins\Edit.Plugins.Search\Edit.Plugins.Search.csproj" />
+    <ProjectReference Include="..\..\plugins\Edit.Plugins.Git\Edit.Plugins.Git.csproj" />
+    <ProjectReference Include="..\..\plugins\Edit.Plugins.Terminal\Edit.Plugins.Terminal.csproj" />
+    <ProjectReference Include="..\..\src\Edit.Dap\Edit.Dap.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\fixtures\**\*" Link="fixtures\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\native\**\*" Link="native\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Condition="Exists('..\..\native')" />
+    <None Include="..\..\themes\**\*" Link="themes\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

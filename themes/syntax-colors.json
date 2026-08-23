@@ -1,0 +1,33 @@
+{
+  "default": "#D4D4D4",
+  "tokenTypes": {
+    "comment": "#6A9955",
+    "string": "#CE9178",
+    "keyword": "#569CD6",
+    "number": "#B5CEA8",
+    "constant": "#4FC1FF",
+    "constant.builtin": "#4FC1FF",
+    "type": "#4EC9B0",
+    "type.builtin": "#4EC9B0",
+    "variable": "#9CDCFE",
+    "variable.builtin": "#4FC1FF",
+    "variable.parameter": "#9CDCFE",
+    "function": "#DCDCAA",
+    "function.builtin": "#DCDCAA",
+    "function.method": "#DCDCAA",
+    "property": "#9CDCFE",
+    "property.builtin": "#9CDCFE",
+    "operator": "#D4D4D4",
+    "punctuation": "#D4D4D4",
+    "punctuation.bracket": "#D4D4D4",
+    "punctuation.delimiter": "#D4D4D4",
+    "tag": "#569CD6",
+    "attribute": "#9CDCFE",
+    "namespace": "#4EC9B0",
+    "module": "#4EC9B0",
+    "constructor": "#4EC9B0",
+    "label": "#C8C8C8",
+    "string.escape": "#D7BA7D",
+    "string.regex": "#D16969"
+  }
+}

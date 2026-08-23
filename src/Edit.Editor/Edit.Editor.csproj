@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>Edit.Editor</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Skia" />
+    <PackageReference Include="SkiaSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="..\..\assets\fonts\JetBrainsMonoNL-Regular.ttf" LogicalName="Edit.Editor.Fonts.JetBrainsMonoNL-Regular.ttf" />
+    <None Include="..\..\assets\fonts\OFL.txt" Link="Fonts\OFL.txt" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Edit.Text\Edit.Text.csproj" />
+    <ProjectReference Include="..\Edit.TreeSitter\Edit.TreeSitter.csproj" />
+    <ProjectReference Include="..\Edit.Core\Edit.Core.csproj" />
+  </ItemGroup>
+</Project>
