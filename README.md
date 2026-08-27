@@ -4,7 +4,7 @@ A modular, language-agnostic desktop IDE built with .NET and Avalonia. The code 
 
 ## Requirements
 
-- .NET 9 SDK (or .NET 10 with roll-forward)
+- .NET 10 SDK
 - Windows, Linux, or macOS
 - **Docker** (Linux only, for building Tree-sitter grammar natives)
 

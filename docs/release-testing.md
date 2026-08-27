@@ -4,7 +4,7 @@ How to validate release builds locally before pushing workflows to GitHub.
 
 ## Prerequisites
 
-- .NET 9 SDK
+- .NET 10 SDK
 - Docker (Linux Tree-sitter builds)
 - [act](https://github.com/nektos/act) (optional, for workflow dry-runs)
 
@@ -123,4 +123,4 @@ Each release produces six downloads:
 - `Edit-{version}-osx-arm64-selfcontained.tar.gz`
 - `Edit-{version}-osx-arm64-fxdependent.tar.gz`
 
-Self-contained bundles include the .NET runtime. Framework-dependent builds require .NET 9+ on the target machine.
+Self-contained bundles include the .NET runtime. Framework-dependent builds require .NET 10+ on the target machine.
