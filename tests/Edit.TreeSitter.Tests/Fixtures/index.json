@@ -1,0 +1,118 @@
+[
+  {
+    "id": "agda",
+    "sample": "agda/sample.agda"
+  },
+  {
+    "id": "bash",
+    "sample": "bash/sample.sh"
+  },
+  {
+    "id": "c",
+    "sample": "c/sample.c"
+  },
+  {
+    "id": "cpp",
+    "sample": "cpp/sample.cpp"
+  },
+  {
+    "id": "csharp",
+    "sample": "csharp/sample.cs"
+  },
+  {
+    "id": "css",
+    "sample": "css/sample.css"
+  },
+  {
+    "id": "embedded-template",
+    "sample": "embedded-template/sample.erb"
+  },
+  {
+    "id": "go",
+    "sample": "go/sample.go"
+  },
+  {
+    "id": "haskell",
+    "sample": "haskell/sample.hs"
+  },
+  {
+    "id": "html",
+    "sample": "html/sample.html"
+  },
+  {
+    "id": "java",
+    "sample": "java/sample.java"
+  },
+  {
+    "id": "javascript",
+    "sample": "javascript/sample.js"
+  },
+  {
+    "id": "jsdoc",
+    "sample": "jsdoc/sample.jsdoc"
+  },
+  {
+    "id": "json",
+    "sample": "json/sample.json"
+  },
+  {
+    "id": "julia",
+    "sample": "julia/sample.jl"
+  },
+  {
+    "id": "ocaml",
+    "sample": "ocaml/sample.ml"
+  },
+  {
+    "id": "ocaml-type",
+    "sample": "ocaml-type/sample.mli"
+  },
+  {
+    "id": "php",
+    "sample": "php/sample.php"
+  },
+  {
+    "id": "python",
+    "sample": "python/sample.py"
+  },
+  {
+    "id": "ql",
+    "sample": "ql/sample.ql"
+  },
+  {
+    "id": "regex",
+    "sample": "regex/sample.regex"
+  },
+  {
+    "id": "ruby",
+    "sample": "ruby/sample.rb"
+  },
+  {
+    "id": "rust",
+    "sample": "rust/sample.rs"
+  },
+  {
+    "id": "scala",
+    "sample": "scala/sample.scala"
+  },
+  {
+    "id": "toml",
+    "sample": "toml/sample.toml"
+  },
+  {
+    "id": "tsq",
+    "sample": "tsq/sample.tsq"
+  },
+  {
+    "id": "tsx",
+    "sample": "tsx/sample.tsx"
+  },
+  {
+    "id": "typescript",
+    "sample": "typescript/sample.ts"
+  },
+  {
+    "id": "verilog",
+    "sample": "verilog/sample.sv"
+  }
+]

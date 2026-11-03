@@ -201,7 +201,9 @@ public sealed class MainWindow : Window
                     if (_explorerTree.SelectedItem is FileNode { IsDirectory: false } file)
                     {
                         var doc = _vm.DocumentsService.OpenFile(file.FullPath);
-                        _vm.OpenDocument(doc);
+                        var dockable = _vm.OpenDocument(doc);
+                        _vm.AttachDocumentLsp(dockable);
+                        await _vm.EnsureLanguageServersForDocumentAsync(doc);
                         await _vm.Lsp.DidOpenAsync(doc);
                         _vm.UpdateWindowTitle();
                     }
@@ -235,7 +237,9 @@ public sealed class MainWindow : Window
         if (files.Count > 0 && files[0].TryGetLocalPath() is { } path)
         {
             var doc = _vm.DocumentsService.OpenFile(path);
-            _vm.OpenDocument(doc);
+            var dockable = _vm.OpenDocument(doc);
+            _vm.AttachDocumentLsp(dockable);
+            await _vm.EnsureLanguageServersForDocumentAsync(doc);
             await _vm.Lsp.DidOpenAsync(doc);
             _vm.UpdateWindowTitle();
         }
@@ -254,6 +258,7 @@ public sealed class MainWindow : Window
             _vm.RefreshExplorer();
             _vm.UpdateWindowTitle();
             _vm.Log($"Opened folder {path}");
+            await _vm.StartLanguageServersAsync(path);
         }
     }
 

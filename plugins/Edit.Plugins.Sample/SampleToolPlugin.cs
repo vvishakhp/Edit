@@ -18,6 +18,13 @@ public sealed class SampleToolPlugin : IPlugin
             "sample.hello",
             "Sample: Hello",
             _ => Task.CompletedTask));
+        context.Lsp.RegisterMethod(new DelegateLspMethodHandler(
+            "edit/samplePing",
+            isRequest: true,
+            (_, _) => Task.FromResult<object?>("pong")));
+        context.Lsp.RegisterCommand(new DelegateLspCommandHandler(
+            "edit.sample.command",
+            (_, _) => Task.FromResult<object?>(null)));
         return Task.CompletedTask;
     }
 }

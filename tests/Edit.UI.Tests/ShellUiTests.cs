@@ -24,9 +24,13 @@ public class ShellUiTests
         services.AddSingleton<ICommandRegistry, CommandRegistry>();
         services.AddSingleton<DocumentService>();
         services.AddSingleton<WorkspaceService>();
+        services.AddSingleton<ILspContributionRegistry, LspContributionRegistry>();
+        services.AddSingleton<ILanguageServerRegistry, LanguageServerRegistry>();
+        services.AddSingleton<ILanguageClientManager, LanguageClientManager>();
         services.AddSingleton<LanguageClient>();
         services.AddSingleton<MockLanguageClient>();
-        services.AddSingleton<ISyntaxHighlighter>(_ => TreeSitterHighlighter.CreateDefault());
+        services.AddSingleton<ISyntaxHighlighter>(_ =>
+            TreeSitterHighlighter.CreateDefault(Edit.Platform.AppPaths.TreeSitterNativesRoot()));
         services.AddSingleton<ISyntaxColorTheme>(_ => SyntaxColorTheme.CreateDefault());
         var sp = services.BuildServiceProvider();
         return new ShellViewModel(

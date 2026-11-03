@@ -9,8 +9,10 @@ internal static class EditorHitTester
     {
         var line = (int)Math.Floor((point.Y + scrollY) / EditorLayout.LineHeight);
         line = Math.Clamp(line, 0, Math.Max(0, buffer.LineCount - 1));
-        var col = (int)Math.Floor((point.X - EditorLayout.PaddingLeft) / EditorLayout.CharWidth);
-        col = Math.Max(0, col);
+        var visualCol = (int)Math.Floor((point.X - EditorLayout.PaddingLeft) / EditorLayout.CharWidth);
+        visualCol = Math.Max(0, visualCol);
+        var content = buffer.GetLineContent(line);
+        var col = EditorVisualColumns.GetCharIndex(content, visualCol);
         return buffer.GetOffset(line, col);
     }
 

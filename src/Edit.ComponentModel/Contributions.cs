@@ -55,6 +55,7 @@ public interface IPluginContext
     IServiceProvider Services { get; }
     ICommandRegistry Commands { get; }
     IToolWindowRegistry ToolWindows { get; }
+    ILspContributionRegistry Lsp { get; }
 }
 
 public interface ICommand

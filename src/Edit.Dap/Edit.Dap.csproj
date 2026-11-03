@@ -2,4 +2,9 @@
   <PropertyGroup>
     <RootNamespace>Edit.Dap</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Edit.Platform\Edit.Platform.csproj" />
+    <PackageReference Include="StreamJsonRpc" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "servers": [
+    {
+      "id": "gopls",
+      "displayName": "gopls",
+      "command": "gopls",
+      "args": [],
+      "protocol": "lsp",
+      "transport": "stdio",
+      "languageIds": ["go"],
+      "fileGlobs": ["**/*.go"],
+      "initializationOptions": null
+    },
+    {
+      "id": "rust-analyzer",
+      "displayName": "rust-analyzer",
+      "command": "rust-analyzer",
+      "args": [],
+      "protocol": "lsp",
+      "transport": "stdio",
+      "languageIds": ["rust"],
+      "fileGlobs": ["**/*.rs"],
+      "initializationOptions": null
+    }
+  ]
+}

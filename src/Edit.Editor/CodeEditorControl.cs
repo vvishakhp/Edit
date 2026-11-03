@@ -1,6 +1,8 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Layout;
 using Avalonia.Media;
 using Avalonia.Threading;
 using Edit.Core;
@@ -28,6 +30,8 @@ public sealed class CodeEditorControl : Control
     private readonly EditorInteractionState _state = new();
     private readonly EditorEditOperations _edits;
     private readonly EditorPointerHandler _pointer;
+    private Popup? _completionPopup;
+    private ListBox? _completionList;
 
     public CodeEditorControl()
     {
@@ -102,6 +106,84 @@ public sealed class CodeEditorControl : Control
     {
         _state.HoverText = text;
         InvalidateVisual();
+    }
+
+    public void ShowCompletions(IReadOnlyList<CompletionListItem> items)
+    {
+        if (items.Count == 0)
+        {
+            HideCompletions();
+            return;
+        }
+
+        EnsureCompletionPopup();
+        _completionList!.ItemsSource = items;
+        _completionList.SelectedIndex = 0;
+        _completionPopup!.PlacementTarget = this;
+        _completionPopup.HorizontalOffset = 64;
+        _completionPopup.VerticalOffset = 24;
+        _completionPopup.IsOpen = true;
+    }
+
+    public void HideCompletions()
+    {
+        if (_completionPopup is not null)
+            _completionPopup.IsOpen = false;
+    }
+
+    private void EnsureCompletionPopup()
+    {
+        if (_completionPopup is not null) return;
+
+        _completionList = new ListBox
+        {
+            MinWidth = 280,
+            MaxHeight = 240,
+            Background = new SolidColorBrush(Color.Parse("#2D2D30")),
+            Foreground = Brushes.WhiteSmoke
+        };
+        _completionList.DoubleTapped += (_, _) => AcceptSelectedCompletion();
+        _completionList.KeyDown += (_, e) =>
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Tab)
+            {
+                AcceptSelectedCompletion();
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Escape)
+            {
+                HideCompletions();
+                e.Handled = true;
+            }
+        };
+
+        _completionPopup = new Popup
+        {
+            Child = _completionList,
+            Placement = PlacementMode.Pointer,
+            IsLightDismissEnabled = true
+        };
+        // Attach as logical child overlay host
+        LogicalChildren.Add(_completionPopup);
+        VisualChildren.Add(_completionPopup);
+    }
+
+    private void AcceptSelectedCompletion()
+    {
+        var doc = Document;
+        if (doc is null || _completionList?.SelectedItem is not CompletionListItem item)
+        {
+            HideCompletions();
+            return;
+        }
+
+        var word = doc.Buffer.GetWordAt(doc.CaretOffset);
+        var start = word.Start;
+        var length = Math.Max(0, doc.CaretOffset - start);
+        doc.Buffer.ApplyEdit(start, length, item.InsertText);
+        doc.CaretOffset = start + item.InsertText.Length;
+        HideCompletions();
+        RefreshAfterEdit();
     }
 
     public event EventHandler? CaretMoved;
@@ -196,6 +278,14 @@ public sealed class CodeEditorControl : Control
             Bounds.Height,
             NotifySelectionChanged,
             RefreshAfterEdit);
+
+        if (e.Key == Key.Escape)
+            HideCompletions();
+        else if (_completionPopup is { IsOpen: true } && (e.Key == Key.Enter || e.Key == Key.Tab))
+        {
+            AcceptSelectedCompletion();
+            e.Handled = true;
+        }
     }
 
     protected override void OnTextInput(TextInputEventArgs e)

@@ -17,7 +17,7 @@ public class PluginHostTests
         var services = new ServiceCollection().BuildServiceProvider();
         var commands = new CommandRegistry();
         var tools = new ToolWindowRegistry();
-        var context = new DefaultPluginContext(services, commands, tools);
+        var context = new DefaultPluginContext(services, commands, tools, new LspContributionRegistry());
         var host = new PluginHost(NullLogger<PluginHost>.Instance);
 
         await host.LoadInProcessAsync(new[] { new SampleToolPlugin() }, context);

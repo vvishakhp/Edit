@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Edit.ComponentModel;
 using Edit.Text;
 using Microsoft.Extensions.Logging;
@@ -6,22 +7,32 @@ namespace Edit.Core;
 
 public abstract class PluginContext : IPluginContext
 {
-    protected PluginContext(IServiceProvider services, ICommandRegistry commands, IToolWindowRegistry toolWindows)
+    protected PluginContext(
+        IServiceProvider services,
+        ICommandRegistry commands,
+        IToolWindowRegistry toolWindows,
+        ILspContributionRegistry lsp)
     {
         Services = services;
         Commands = commands;
         ToolWindows = toolWindows;
+        Lsp = lsp;
     }
 
     public IServiceProvider Services { get; }
     public ICommandRegistry Commands { get; }
     public IToolWindowRegistry ToolWindows { get; }
+    public ILspContributionRegistry Lsp { get; }
 }
 
 public sealed class DefaultPluginContext : PluginContext
 {
-    public DefaultPluginContext(IServiceProvider services, ICommandRegistry commands, IToolWindowRegistry toolWindows)
-        : base(services, commands, toolWindows)
+    public DefaultPluginContext(
+        IServiceProvider services,
+        ICommandRegistry commands,
+        IToolWindowRegistry toolWindows,
+        ILspContributionRegistry lsp)
+        : base(services, commands, toolWindows, lsp)
     {
     }
 }
@@ -259,7 +270,41 @@ public sealed class SettingsModel
 public sealed class LanguageServerSettings
 {
     public string Id { get; set; } = "";
+    public string DisplayName { get; set; } = "";
     public string Command { get; set; } = "";
     public List<string> Args { get; set; } = new();
+    /// <summary>Protocol kind, e.g. <c>lsp</c>.</summary>
+    public string Protocol { get; set; } = "lsp";
+    /// <summary>Transport kind: <c>stdio</c> or <c>socket</c>.</summary>
+    public string Transport { get; set; } = "stdio";
+    public string? Host { get; set; }
+    public int? Port { get; set; }
+    public List<string> LanguageIds { get; set; } = new();
     public List<string> FileGlobs { get; set; } = new() { "*" };
+    public JsonElement? InitializationOptions { get; set; }
+}
+
+public sealed class LanguageServersFile
+{
+    public int SchemaVersion { get; set; } = 1;
+    public List<LanguageServerSettings> Servers { get; set; } = new();
+}
+
+public sealed class DebugAdapterSettings
+{
+    public string Id { get; set; } = "";
+    public string DisplayName { get; set; } = "";
+    public string Command { get; set; } = "";
+    public List<string> Args { get; set; } = new();
+    public string Protocol { get; set; } = "dap";
+    public string Transport { get; set; } = "stdio";
+    public string? Host { get; set; }
+    public int? Port { get; set; }
+    public List<string> FileGlobs { get; set; } = new() { "*" };
+}
+
+public sealed class DebugAdaptersFile
+{
+    public int SchemaVersion { get; set; } = 1;
+    public List<DebugAdapterSettings> Adapters { get; set; } = new();
 }

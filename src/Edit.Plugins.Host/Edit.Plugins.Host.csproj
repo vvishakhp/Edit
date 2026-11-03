@@ -7,5 +7,6 @@
     <ProjectReference Include="..\Edit.Core\Edit.Core.csproj" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" />
     <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="StreamJsonRpc" />
   </ItemGroup>
 </Project>

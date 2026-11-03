@@ -61,10 +61,12 @@ internal sealed class EditorDrawOperation : ICustomDrawOperation
                 var selEnd = Math.Min(_snapshot.SelectionEnd, lineEnd);
                 if (selEnd > selStart)
                 {
-                    var x0 = (float)(EditorLayout.PaddingLeft + (selStart - lineStart) * charWidth);
-                    var x1 = (float)(EditorLayout.PaddingLeft + (selEnd - lineStart) * charWidth);
+                    var vis0 = EditorVisualColumns.GetVisualColumn(line.Content, selStart - lineStart);
+                    var vis1 = EditorVisualColumns.GetVisualColumn(line.Content, selEnd - lineStart);
+                    var x0 = (float)(EditorLayout.PaddingLeft + vis0 * charWidth);
+                    var x1 = (float)(EditorLayout.PaddingLeft + vis1 * charWidth);
                     var top = (float)(line.LineNumber * lineHeight - _snapshot.ScrollY);
-                    canvas.DrawRect(x0, top, x1 - x0, lineHeight, selectionPaint);
+                    canvas.DrawRect(x0, top, Math.Max(charWidth * 0.5f, x1 - x0), lineHeight, selectionPaint);
                 }
             }
 
@@ -78,8 +80,10 @@ internal sealed class EditorDrawOperation : ICustomDrawOperation
                 var b = Math.Min(d.End, lineEnd);
                 if (b > a)
                 {
-                    var x0 = (float)(EditorLayout.PaddingLeft + (a - lineStart) * charWidth);
-                    var x1 = (float)(EditorLayout.PaddingLeft + (b - lineStart) * charWidth);
+                    var vis0 = EditorVisualColumns.GetVisualColumn(line.Content, a - lineStart);
+                    var vis1 = EditorVisualColumns.GetVisualColumn(line.Content, b - lineStart);
+                    var x0 = (float)(EditorLayout.PaddingLeft + vis0 * charWidth);
+                    var x1 = (float)(EditorLayout.PaddingLeft + vis1 * charWidth);
                     var baseY = (float)(line.LineNumber * lineHeight - _snapshot.ScrollY + lineHeight - 2);
                     squigglePaint.Color = d.Severity.Equals("Warning", StringComparison.OrdinalIgnoreCase)
                         ? new SKColor(204, 167, 0)
@@ -90,7 +94,11 @@ internal sealed class EditorDrawOperation : ICustomDrawOperation
             }
         }
 
-        var cx = (float)(EditorLayout.PaddingLeft + _snapshot.CaretColumn * charWidth);
+        var caretLineSnap = _snapshot.Lines.FirstOrDefault(l => l.LineNumber == _snapshot.CaretLine);
+        var caretVisual = caretLineSnap.Content is not null
+            ? EditorVisualColumns.GetVisualColumn(caretLineSnap.Content, _snapshot.CaretColumn)
+            : _snapshot.CaretColumn;
+        var cx = (float)(EditorLayout.PaddingLeft + caretVisual * charWidth);
         var cy = (float)(_snapshot.CaretLine * lineHeight - _snapshot.ScrollY);
         canvas.DrawLine(cx, cy + 2, cx, cy + lineHeight - 2, caretPaint);
 
@@ -103,7 +111,7 @@ internal sealed class EditorDrawOperation : ICustomDrawOperation
         {
             using var hoverBg = new SKPaint { Color = new SKColor(40, 40, 40), IsAntialias = true };
             using var hoverFg = new SKPaint { Color = SKColors.WhiteSmoke, IsAntialias = true };
-            var hx = (float)(EditorLayout.PaddingLeft + _snapshot.CaretColumn * charWidth);
+            var hx = (float)(EditorLayout.PaddingLeft + caretVisual * charWidth);
             var hy = (float)(_snapshot.CaretLine * lineHeight - _snapshot.ScrollY - 22);
             canvas.DrawRect(hx, hy, Math.Min(360, _snapshot.HoverText!.Length * 7 + 16), 20, hoverBg);
             canvas.DrawText(_snapshot.HoverText, hx + 6, hy + 14, font, hoverFg);
@@ -139,17 +147,25 @@ internal sealed class EditorDrawOperation : ICustomDrawOperation
 
             if (end <= i) end = i + 1;
             using var paint = new SKPaint { Color = color, IsAntialias = true };
-            // Draw one cell at a time on the monospace grid so caret/hit-test never drift
-            // from Skia's multi-glyph string layout.
             for (var c = i; c < end; c++)
-                canvas.DrawText(content[c].ToString(), x + c * charWidth, y, font, paint);
+            {
+                var ch = content[c];
+                var visual = EditorVisualColumns.GetVisualColumn(content, c);
+                if (ch == '\t')
+                    continue; // tab advances the grid but draws no glyph
+                canvas.DrawText(ch.ToString(), x + visual * charWidth, y, font, paint);
+            }
             i = end;
         }
     }
 
     private void DrawBracketMark(SKCanvas canvas, SKFont font, BracketMarkSnapshot mark, SKPaint paint, float charWidth, float lineHeight, float baseline)
     {
-        var x = (float)(EditorLayout.PaddingLeft + mark.Column * charWidth);
+        var line = _snapshot.Lines.FirstOrDefault(l => l.LineNumber == mark.Line);
+        var visual = line.Content is not null
+            ? EditorVisualColumns.GetVisualColumn(line.Content, mark.Column)
+            : mark.Column;
+        var x = (float)(EditorLayout.PaddingLeft + visual * charWidth);
         var y = (float)(mark.Line * lineHeight - _snapshot.ScrollY + baseline);
         canvas.DrawText(mark.Text, x, y, font, paint);
     }

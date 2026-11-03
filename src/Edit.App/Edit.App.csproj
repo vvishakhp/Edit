@@ -36,9 +36,11 @@
     <ProjectReference Include="..\..\plugins\Edit.Plugins.Terminal\Edit.Plugins.Terminal.csproj" />
     <ProjectReference Include="..\Edit.Dap\Edit.Dap.csproj" />
   </ItemGroup>
-  <ItemGroup>
+    <ItemGroup>
     <None Include="..\..\native\$(RuntimeIdentifier)\**\*" Link="tree-sitter\$(RuntimeIdentifier)\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" Condition="'$(RuntimeIdentifier)' != '' AND Exists('..\..\native\$(RuntimeIdentifier)')" />
     <None Include="..\..\themes\**\*" Link="themes\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\config\language-servers.json" Link="config\language-servers.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\config\debug-adapters.json" Link="config\debug-adapters.json" CopyToOutputDirectory="PreserveNewest" />
     <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

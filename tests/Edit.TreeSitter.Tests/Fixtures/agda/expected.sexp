@@ -1,0 +1,1 @@
+(source_file (module (module_name (qid))) (function (lhs (function_name (atom (qid)))) (rhs (expr (atom (SetN)) (expr (atom (SetN)))))) (function (lhs (atom (qid)) (atom (qid))) (rhs (expr (atom (qid))))))

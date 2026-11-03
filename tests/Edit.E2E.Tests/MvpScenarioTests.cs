@@ -22,9 +22,13 @@ public class MvpScenarioTests
         services.AddSingleton<ICommandRegistry, CommandRegistry>();
         services.AddSingleton<DocumentService>();
         services.AddSingleton<WorkspaceService>();
+        services.AddSingleton<ILspContributionRegistry, LspContributionRegistry>();
+        services.AddSingleton<ILanguageServerRegistry, LanguageServerRegistry>();
+        services.AddSingleton<ILanguageClientManager, LanguageClientManager>();
         services.AddSingleton<LanguageClient>();
         services.AddSingleton<MockLanguageClient>();
-        services.AddSingleton<ISyntaxHighlighter>(_ => TreeSitterHighlighter.CreateDefault());
+        services.AddSingleton<ISyntaxHighlighter>(_ =>
+            TreeSitterHighlighter.CreateDefault(Edit.Platform.AppPaths.TreeSitterNativesRoot()));
         services.AddSingleton<ISyntaxColorTheme>(_ => SyntaxColorTheme.CreateDefault());
         var sp = services.BuildServiceProvider();
         return new ShellViewModel(
@@ -112,7 +116,19 @@ public class MvpScenarioTests
     private static string? FindNativesRoot()
     {
         var root = Edit.Platform.AppPaths.TreeSitterNativesRoot();
-        return Directory.Exists(root) ? root : null;
+        var csharpDir = Path.Combine(root, "csharp");
+        if (!Directory.Exists(csharpDir)) return null;
+        // Prefer an actual grammar library, not a queries-only stub directory.
+        var hasLibrary = Directory.EnumerateFiles(csharpDir)
+            .Any(f =>
+            {
+                var name = Path.GetFileName(f);
+                var ext = Path.GetExtension(f);
+                return (name.StartsWith("libtree-sitter-", StringComparison.OrdinalIgnoreCase)
+                        || name.StartsWith("tree-sitter-", StringComparison.OrdinalIgnoreCase))
+                       && ext is ".so" or ".dylib" or ".dll";
+            });
+        return hasLibrary ? root : null;
     }
 
     [AvaloniaFact]
